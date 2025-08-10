@@ -7,47 +7,51 @@ class Ingredient:
         self._name = name
         self._type = type_
         self._price = price
+
     def get_name(self):
         return self._name
+
     def get_type(self):
         return self._type
+
     def get_price(self):
         return self._price
 
+
 class TestDataBase:
 
-    """ Тест на получение доступных булочек """
-    def test_bun_count_is_three(self):
+    def test_available_buns_count_is_three(self):
+        """Проверка: доступно ровно три булочки"""
         db = Database()
         buns = db.available_buns()
         assert len(buns) == 3
 
-    """ Тест на получение всех доступных ингредиентов """
-    def test_all_ingredients_listed(self):
+    def test_available_ingredients_count_is_six(self):
+        """Проверка: доступно ровно шесть ингредиентов"""
         db = Database()
         ingredients = db.available_ingredients()
         assert len(ingredients) == 6
 
-    """ Тест: доступны ровно три соуса """
-    def test_three_sauces_available(self):
+    def test_available_sauces_count_is_three(self):
+        """Проверка: доступно ровно три соуса"""
         db = Database()
         sauces = [i for i in db.available_ingredients() if i.get_type() == INGREDIENT_TYPE_SAUCE]
         assert len(sauces) == 3
 
-    """ Тест: доступны ровно три начинки """
-    def test_three_fillings_available(self):
+    def test_available_fillings_count_is_three(self):
+        """Проверка: доступно ровно три начинки"""
         db = Database()
         fillings = [i for i in db.available_ingredients() if i.get_type() == INGREDIENT_TYPE_FILLING]
         assert len(fillings) == 3
 
-    """ Тест: цена на hot sauce корректна """
-    def test_hot_sauce_price_is_correct(self):
+    def test_hot_sauce_price_is_100(self):
+        """Проверка: цена на 'hot sauce' равна 100"""
         db = Database()
         hot_sauce = next(i for i in db.available_ingredients() if i.get_name() == 'hot sauce')
         assert hot_sauce.get_price() == 100
 
-    """ Тест: альтернативный сценарий — доступно менее трёх соусов """
-    def test_less_than_three_sauces_available(self):
+    def test_available_sauces_count_is_less_than_three(self):
+        """Альтернативный сценарий: доступно менее трёх соусов (мокаем данные)"""
         mock_ingredients = [
             Ingredient("hot sauce", INGREDIENT_TYPE_SAUCE),
             Ingredient("lettuce", INGREDIENT_TYPE_FILLING)
@@ -56,4 +60,4 @@ class TestDataBase:
         with patch.object(Database, 'available_ingredients', return_value=mock_ingredients):
             db = Database()
             sauces = [i for i in db.available_ingredients() if i.get_type() == INGREDIENT_TYPE_SAUCE]
-            assert len(sauces) < 3
+            assert len(sauces) == 1  # Явно проверяем, что соус один

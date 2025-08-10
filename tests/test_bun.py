@@ -3,8 +3,11 @@ from praktikum.bun import Bun
 
 
 class TestBun:
-    def test_get_name_returns_expected_value(self):
-        """Проверяет, что метод get_name возвращает корректное название булки."""
+
+    def test_get_name_returns_correct_value(self):
+        """
+        Проверка: метод get_name возвращает корректное название булки.
+        """
         bun = Bun('Флюоресцентная булка R2-D3', 988)
         assert bun.get_name() == 'Флюоресцентная булка R2-D3'
 
@@ -14,7 +17,11 @@ class TestBun:
         ("Булка с отрицательной ценой", -50),
         ("Булка с плавающей ценой", 99.99),
     ])
-    def test_get_price_returns_expected_value(self, name, price):
-        """Проверяет, что метод get_price возвращает корректную цену булки для разных входных данных."""
+    def test_get_price_returns_correct_value(self, name, price):
+        """
+        Проверка: метод get_price возвращает корректную цену булки
+        для различных входных данных.
+        """
         bun = Bun(name, price)
         assert bun.get_price() == price
+
