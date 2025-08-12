@@ -35,23 +35,26 @@ class TestDataBase:
     def test_available_sauces_count_is_three(self):
         """Проверка: доступно ровно три соуса"""
         db = Database()
-        sauces = [i for i in db.available_ingredients() if i.get_type() == INGREDIENT_TYPE_SAUCE]
+        ingredients = db.available_ingredients()
+        sauces = [i for i in ingredients if i.get_type() == INGREDIENT_TYPE_SAUCE]
         assert len(sauces) == 3
 
     def test_available_fillings_count_is_three(self):
         """Проверка: доступно ровно три начинки"""
         db = Database()
-        fillings = [i for i in db.available_ingredients() if i.get_type() == INGREDIENT_TYPE_FILLING]
+        ingredients = db.available_ingredients()
+        fillings = [i for i in ingredients if i.get_type() == INGREDIENT_TYPE_FILLING]
         assert len(fillings) == 3
 
     def test_hot_sauce_price_is_100(self):
         """Проверка: цена на 'hot sauce' равна 100"""
         db = Database()
-        hot_sauce = next(i for i in db.available_ingredients() if i.get_name() == 'hot sauce')
+        ingredients = db.available_ingredients()
+        hot_sauce = next(i for i in ingredients if i.get_name() == 'hot sauce')
         assert hot_sauce.get_price() == 100
 
-    def test_available_sauces_count_is_less_than_three(self):
-        """Альтернативный сценарий: доступно менее трёх соусов (мокаем данные)"""
+    def test_available_sauces_count_is_one_when_mocked(self):
+        """Проверка: при мокировании данных доступен только один соус"""
         mock_ingredients = [
             Ingredient("hot sauce", INGREDIENT_TYPE_SAUCE),
             Ingredient("lettuce", INGREDIENT_TYPE_FILLING)
@@ -59,5 +62,6 @@ class TestDataBase:
 
         with patch.object(Database, 'available_ingredients', return_value=mock_ingredients):
             db = Database()
-            sauces = [i for i in db.available_ingredients() if i.get_type() == INGREDIENT_TYPE_SAUCE]
-            assert len(sauces) == 1  # Явно проверяем, что соус один
+            ingredients = db.available_ingredients()
+            sauces = [i for i in ingredients if i.get_type() == INGREDIENT_TYPE_SAUCE]
+            assert len(sauces) == 1
