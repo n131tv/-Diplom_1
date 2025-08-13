@@ -21,47 +21,59 @@ class Ingredient:
 class TestDataBase:
 
     def test_available_buns_count_is_three(self):
-        """Проверка: доступно ровно три булочки"""
         db = Database()
         buns = db.available_buns()
         assert len(buns) == 3
 
     def test_available_ingredients_count_is_six(self):
-        """Проверка: доступно ровно шесть ингредиентов"""
         db = Database()
         ingredients = db.available_ingredients()
         assert len(ingredients) == 6
 
     def test_available_sauces_count_is_three(self):
-        """Проверка: доступно ровно три соуса"""
         db = Database()
         ingredients = db.available_ingredients()
-        sauces = [i for i in ingredients if i.get_type() == INGREDIENT_TYPE_SAUCE]
+        sauces = list(filter(lambda i: i.get_type() == INGREDIENT_TYPE_SAUCE, ingredients))
         assert len(sauces) == 3
 
     def test_available_fillings_count_is_three(self):
-        """Проверка: доступно ровно три начинки"""
         db = Database()
         ingredients = db.available_ingredients()
-        fillings = [i for i in ingredients if i.get_type() == INGREDIENT_TYPE_FILLING]
+        fillings = list(filter(lambda i: i.get_type() == INGREDIENT_TYPE_FILLING, ingredients))
         assert len(fillings) == 3
 
     def test_hot_sauce_price_is_100(self):
-        """Проверка: цена на 'hot sauce' равна 100"""
         db = Database()
         ingredients = db.available_ingredients()
-        hot_sauce = next(i for i in ingredients if i.get_name() == 'hot sauce')
+        hot_sauce = next(filter(lambda i: i.get_name() == 'hot sauce', ingredients))
         assert hot_sauce.get_price() == 100
 
-    def test_available_sauces_count_is_one_when_mocked(self):
-        """Проверка: при мокировании данных доступен только один соус"""
+    def test_mocked_ingredients_has_one_sauce(self):
         mock_ingredients = [
             Ingredient("hot sauce", INGREDIENT_TYPE_SAUCE),
             Ingredient("lettuce", INGREDIENT_TYPE_FILLING)
         ]
-
         with patch.object(Database, 'available_ingredients', return_value=mock_ingredients):
             db = Database()
-            ingredients = db.available_ingredients()
-            sauces = [i for i in ingredients if i.get_type() == INGREDIENT_TYPE_SAUCE]
+            sauces = list(filter(lambda i: i.get_type() == INGREDIENT_TYPE_SAUCE, db.available_ingredients()))
             assert len(sauces) == 1
+
+    def test_mocked_ingredients_has_no_sauces(self):
+        mock_ingredients = [
+            Ingredient("lettuce", INGREDIENT_TYPE_FILLING),
+            Ingredient("tomato", INGREDIENT_TYPE_FILLING)
+        ]
+        with patch.object(Database, 'available_ingredients', return_value=mock_ingredients):
+            db = Database()
+            sauces = list(filter(lambda i: i.get_type() == INGREDIENT_TYPE_SAUCE, db.available_ingredients()))
+            assert len(sauces) == 0
+
+    def test_mocked_ingredients_has_two_fillings(self):
+        mock_ingredients = [
+            Ingredient("lettuce", INGREDIENT_TYPE_FILLING),
+            Ingredient("tomato", INGREDIENT_TYPE_FILLING)
+        ]
+        with patch.object(Database, 'available_ingredients', return_value=mock_ingredients):
+            db = Database()
+            fillings = list(filter(lambda i: i.get_type() == INGREDIENT_TYPE_FILLING, db.available_ingredients()))
+            assert len(fillings) == 2
